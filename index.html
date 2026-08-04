@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Arox Tech — Offer Letter Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="loading-overlay hidden" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Preparing your PDF…</p>
+    <small>Rendering borders, images &amp; content — this takes a few seconds</small>
+  </div>
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <div>
+        <h1>Offer Letter Generator</h1>
+        <p>Arox Tech · Internship &amp; Job Offer Letters</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" id="resetBtn">Reset Fields</button>
+      <button class="btn btn-ghost" id="printBtn">🖨 Print</button>
+      <button class="btn btn-primary" id="downloadBtn">⬇ Download PDF</button>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <div class="control-panel">
+
+      <fieldset>
+        <legend>Offer Type</legend>
+        <div class="type-switch">
+          <button type="button" data-type="internship-paid" class="active">Internship<br>With Stipend</button>
+          <button type="button" data-type="internship-unpaid">Internship<br>Without Stipend</button>
+          <button type="button" data-type="job">Job Offer</button>
+        </div>
+        <p class="hint">Switching reshapes the letter, table rows and wording automatically.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Letter Reference</legend>
+        <div class="row2">
+          <div class="field"><label>Offer Letter No.</label><input type="text" id="offerNo" value="AT/2026/1028"></div>
+          <div class="field"><label>Date</label><input type="date" id="letterDate"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Company Header (Top of Page 1)</legend>
+        <div class="field"><label>Address Line 1</label><input type="text" id="addrLine1"
+            value="9/1, Thirunavukkarasu Street, Fairlands,"></div>
+        <div class="field"><label>Address Line 2</label><input type="text" id="addrLine2"
+            value="Salem, Tamil Nadu 636004"></div>
+        <div class="row2">
+          <div class="field"><label>Email</label><input type="text" id="addrEmail" value="mail@aroxtech.in"></div>
+          <div class="field"><label>Website</label><input type="text" id="addrWeb" value="www.aroxtech.in"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Candidate Details</legend>
+        <div class="row2">
+          <div class="field"><label>Salutation</label>
+            <select id="salutation">
+              <option>Mr.</option>
+              <option>Ms.</option>
+              <option>Mx.</option>
+              <option>Dr.</option>
+            </select>
+          </div>
+          <div class="field"><label>Full Name</label><input type="text" id="candidateName" value="Muralidharan R.">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Role Details</legend>
+        <div class="field"><label>Position / Designation</label><input type="text" id="position"
+            value="Artificial Intelligence &amp; Machine Learning Intern"></div>
+        <div class="row2">
+          <div class="field"><label>Department</label><input type="text" id="department"
+              value="Research &amp; Development"></div>
+          <div class="field"><label>Reporting To</label><input type="text" id="reportingTo"
+              value="Project Mentor / Team Lead"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Location</label><input type="text" id="location" value="Salem"></div>
+          <div class="field"><label>Working Days</label><input type="text" id="workingDays" value="Monday – Saturday">
+          </div>
+        </div>
+        <div class="field"><label>Working Hours</label><input type="text" id="workingHours" value="9:30 AM – 6:30 PM">
+        </div>
+      </fieldset>
+
+      <fieldset id="durationBlock">
+        <legend>Duration (Internship)</legend>
+        <div class="row2">
+          <div class="field"><label>Start Date</label><input type="date" id="startDate"></div>
+          <div class="field"><label>End Date</label><input type="date" id="endDate"></div>
+        </div>
+        <p class="hint" id="durationPreview">Duration will be calculated automatically.</p>
+      </fieldset>
+
+      <fieldset id="joiningBlock" style="display:none;">
+        <legend>Joining Details (Job Offer)</legend>
+        <div class="row2">
+          <div class="field"><label>Date of Joining</label><input type="date" id="joiningDate"></div>
+          <div class="field"><label>Employment Type</label>
+            <select id="employmentType">
+              <option>Full-Time</option>
+              <option>Part-Time</option>
+              <option>Contract</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Probation Period (optional)</label><input type="text" id="probation"
+            placeholder="e.g. 3 Months"></div>
+      </fieldset>
+
+      <fieldset id="stipendBlock">
+        <legend>Stipend</legend>
+        <div class="field"><label>Stipend Amount</label><input type="text" id="stipendAmount"
+            value="₹5,000 – ₹8,000 per month (Performance Based)"></div>
+      </fieldset>
+
+      <fieldset id="salaryBlock" style="display:none;">
+        <legend>Compensation</legend>
+        <div class="field"><label>CTC / Salary</label><input type="text" id="salaryAmount"
+            placeholder="e.g. ₹3,60,000 per annum (CTC)"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Roles &amp; Responsibilities</legend>
+        <textarea id="roles" rows="6">Learn and apply core concepts of Artificial Intelligence and Machine Learning.
+Contribute to real-time, industry-relevant projects.
+Design, develop, and test software solutions as assigned.
+Participate in team meetings and collaborate closely with your project team.
+Complete assigned tasks within the given deadlines.
+Maintain professionalism and confidentiality at all times.</textarea>
+        <p class="hint">One point per line.</p>
+      </fieldset>
+
+      <fieldset>
+        <div class="toggle-row"><input type="checkbox" id="includeEval" checked><label for="includeEval">Include
+            Performance Evaluation</label></div>
+        <textarea id="evalCriteria" rows="5">Attendance &amp; punctuality
+Technical learning
+Project quality
+Team collaboration
+Professional conduct
+Innovation and task completion</textarea>
+      </fieldset>
+
+      <fieldset id="eligibilityBlock">
+        <div class="toggle-row"><input type="checkbox" id="includeEligibility" checked><label
+            for="includeEligibility">Include Completion Note</label></div>
+        <textarea id="eligibilityText"
+          rows="3">On successful completion of the internship, you may be eligible to receive an Internship Completion Certificate and a Project Experience Letter, subject to your performance and company policy.</textarea>
+      </fieldset>
+
+      <fieldset>
+        <div class="toggle-row"><input type="checkbox" id="includeSelfDecl" checked><label for="includeSelfDecl">Include
+            Self-Declaration</label></div>
+        <textarea id="selfDeclText"
+          rows="4">I hereby declare that all the information and documents furnished by me are true and accurate to the best of my knowledge and belief. I understand that any false information or misrepresentation may result in the cancellation of this offer at any stage.</textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Terms &amp; Conditions</legend>
+        <textarea id="terms"
+          rows="5">All company policies and confidentiality guidelines must be strictly adhered to.
+All project work, documents, and company information shared with you must be kept strictly confidential.
+Either party may terminate this agreement by providing seven (7) days' written notice, or with immediate effect in the event of a policy violation or misconduct.</textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Signatory</legend>
+        <div class="row2">
+          <div class="field"><label>Signatory Name (optional)</label><input type="text" id="signatoryName"
+              placeholder="e.g. R. Kavitha"></div>
+          <div class="field"><label>Designation</label><input type="text" id="signatoryDesignation" value="HR Manager">
+          </div>
+        </div>
+        <div class="field"><label>Company Name</label><input type="text" id="companyName" value="Arox Tech"></div>
+        <div class="toggle-row" style="margin-top:8px;"><input type="checkbox" id="includeStamp" checked><label
+            for="includeStamp">Show Founder Signature / Stamp</label></div>
+      </fieldset>
+
+    </div>
+
+    <div class="preview-panel" id="pagesContainer"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
