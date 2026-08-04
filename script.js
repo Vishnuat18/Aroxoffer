@@ -138,14 +138,7 @@ function buildBlocks(){
     blocks.push(`<div class="note-box">${escapeHtml(els("eligibilityText").value)}</div>`);
   }
 
-  if(els("includeSelfDecl").checked){
-    blocks.push(`
-      <div class="decl-box">
-        <b>Self-Declaration</b>
-        ${escapeHtml(els("selfDeclText").value)}
-      </div>
-    `);
-  }
+
 
   blocks.push(`
     <div class="section-title">Terms &amp; Conditions</div>

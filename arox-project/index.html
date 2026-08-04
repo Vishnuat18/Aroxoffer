@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- html2canvas and jspdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div id="preloader" class="hidden">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <div class="app-container">
+        <aside class="controls no-print">
+            <h2>Certificate Details</h2>
+            
+            <form id="cert-form">
+                <div class="form-group">
+                    <label for="cert-id-input">Certificate ID</label>
+                    <input type="text" id="cert-id-input" value="ATX-PC-2026-0001">
+                </div>
+                <div class="form-group">
+                    <label for="issue-date-input">Date of Issue</label>
+                    <input type="text" id="issue-date-input" value="04 August 2026">
+                </div>
+                <div class="form-group">
+                    <label for="name-input">Student Name</label>
+                    <input type="text" id="name-input" value="Student Name">
+                </div>
+                <div class="form-group">
+                    <label for="project-input">Project Title</label>
+                    <input type="text" id="project-input" value="Project Title Here">
+                </div>
+                <div class="form-group">
+                    <label for="start-date-input">Start Date</label>
+                    <input type="text" id="start-date-input" value="January 2026">
+                </div>
+                <div class="form-group">
+                    <label for="end-date-input">End Date</label>
+                    <input type="text" id="end-date-input" value="June 2026">
+                </div>
+            </form>
+        </aside>
+
+        <main class="preview-area">
+            <div id="certificate" class="certificate-wrapper">
+                <img src="assets/CertBG.png" alt="Certificate Background" class="cert-bg">
+                
+                <div class="cert-content">
+                    <div class="top-section">
+                        <img src="assets/arox logo.webp" alt="Arox Tech Logo" class="cert-logo">
+                    </div>
+
+                    <div class="middle-section">
+                        <h1 class="cert-title">PROJECT COMPLETION</h1>
+                        
+                        <div class="cert-subtitle-wrapper">
+                            <span class="line"><span class="diamond"></span></span>
+                            <h2 class="cert-subtitle">CERTIFICATE</h2>
+                            <span class="line"><span class="diamond"></span></span>
+                        </div>
+                        
+                        <p class="cert-presented">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
+                        
+                        <div class="cert-name-wrapper">
+                            <h3 class="cert-name" id="cert-name-val">Student Name</h3>
+                            <div class="diamond-line">
+                                <span class="diamond"></span>
+                            </div>
+                        </div>
+
+                        <p class="cert-for">for successfully completing the project titled</p>
+                        
+                        <div class="cert-project-wrapper">
+                            <span class="quote left-quote">“</span>
+                            <div class="project-title-container">
+                                <span class="cert-project-title" id="cert-project-val">Project Title Here</span>
+                            </div>
+                            <span class="quote right-quote">”</span>
+                        </div>
+                        
+                        <p class="cert-duration">
+                            at Arox Tech from <span class="cert-date-inline" id="cert-start-date-val">January 2026</span> to <span class="cert-date-inline" id="cert-end-date-val">June 2026</span>.
+                        </p>
+                        <p class="cert-appreciation">
+                            We appreciate your dedication, hard work, and valuable contributions<br>
+                            towards the successful completion of the project.
+                        </p>
+                    </div>
+
+                    <div class="meta-section">
+                        <div class="cert-meta-item">
+                            <span class="meta-label">CERTIFICATE ID</span>
+                            <span class="meta-value" id="cert-id-val">ATX-PC-2026-0001</span>
+                        </div>
+                        <div class="meta-center-line">
+                            <div class="diamond"></div>
+                        </div>
+                        <div class="cert-meta-item">
+                            <span class="meta-label">DATE OF ISSUE</span>
+                            <span class="meta-value" id="cert-issue-date-val">04 August 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="bottom-section">
+                        <div class="ceo-col">
+                            <div class="signature-wrap">
+                                <img src="assets/Sign.png" alt="CEO Signature & Seal" class="ceo-sign">
+                            </div>
+                            <div class="name-title">
+                                <strong>CEO</strong>
+                                <span>Arox Tech</span>
+                            </div>
+                        </div>
+
+                        <div class="qr-col">
+                            <div id="qr-code" class="qr-container"></div>
+                        </div>
+
+                        <div class="trainer-col">
+                            <div class="signature-wrap">
+                                <img src="assets/trainer.png" alt="Trainer Signature" class="trainer-sign">
+                            </div>
+                            <div class="name-title">
+                                <strong>TRAINING HEAD</strong>
+                                <span>Arox Tech</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions no-print">
+                <button id="download-img-btn" class="btn primary-btn">Download Image</button>
+                <button id="download-pdf-btn" class="btn primary-btn">Download PDF</button>
+                <button id="print-btn" class="btn secondary-btn">Print</button>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
