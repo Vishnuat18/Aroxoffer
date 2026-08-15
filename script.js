@@ -300,3 +300,60 @@ async function downloadPDF(){
 
 syncFieldVisibility();
 render();
+
+// ERP Integration: postMessage API for Live Document Hub
+window.addEventListener('message', (event) => {
+  const { type, data } = event.data || {};
+  if (type === 'UPDATE_DATA') {
+    if (data.candidateName) {
+      const nameInput = document.getElementById('candidateName');
+      if (nameInput) nameInput.value = data.candidateName;
+    }
+    if (data.roleTitle || data.position) {
+      const positionInput = document.getElementById('position');
+      if (positionInput) positionInput.value = data.roleTitle || data.position;
+    }
+    if (data.location) {
+      const locationInput = document.getElementById('location');
+      if (locationInput) locationInput.value = data.location;
+    }
+    if (data.startDate) {
+      const startInput = document.getElementById('startDate');
+      if (startInput) startInput.value = data.startDate.split('T')[0];
+    }
+    if (data.endDate) {
+      const endInput = document.getElementById('endDate');
+      if (endInput) endInput.value = data.endDate.split('T')[0];
+    }
+    if (data.stipendAmount) {
+      const stipendInput = document.getElementById('stipendAmount');
+      if (stipendInput) stipendInput.value = data.stipendAmount;
+    }
+    // Refresh the preview
+    if (typeof render === 'function') render();
+  } else if (type === 'EXPORT_PDF') {
+    if (typeof downloadPDF === 'function') downloadPDF();
+  }
+});
+
+// Hide sidebar and topbar when embedded inside Document Hub iframe
+if (window !== window.top) {
+  const controlPanel = document.querySelector(".control-panel");
+  if (controlPanel) controlPanel.style.display = "none";
+  const topbar = document.querySelector(".topbar");
+  if (topbar) topbar.style.display = "none";
+  const appShell = document.querySelector(".app-shell");
+  if (appShell) {
+    appShell.style.padding = "0";
+    appShell.style.height = "100vh";
+    appShell.style.marginTop = "0";
+  }
+  const pagesContainer = document.getElementById("pagesContainer");
+  if (pagesContainer) {
+    pagesContainer.style.width = "100%";
+    pagesContainer.style.maxWidth = "100%";
+    pagesContainer.style.margin = "0";
+    pagesContainer.style.padding = "20px";
+    pagesContainer.style.overflowY = "auto";
+  }
+}
